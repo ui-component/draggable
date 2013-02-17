@@ -26,7 +26,6 @@ function Draggable(el, opts){
   this.settings = {};
   this.enable('x');
   this.enable('y');
-  this.set('containment', el.parentNode);
   this.set(opts || {});
   this.el = el;
 }
@@ -45,7 +44,8 @@ emitter(Draggable.prototype);
  */
 
 Draggable.prototype.build = function(){
-  this.mouse = mouse(this.el, this);
+  var el = this.get('handle') || this.el;
+  this.mouse = mouse(el, this);
   this.mouse.bind();
   return this;
 };
