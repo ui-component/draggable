@@ -24,6 +24,8 @@ module.exports = function(el, opts){
 
 function Draggable(el, opts){
   this.settings = {};
+  this.enable('x');
+  this.enable('y');
   this.set(opts || {});
   this.el = el;
 }
@@ -64,8 +66,11 @@ Draggable.prototype.onmousedown = function(e){
  */
 
 Draggable.prototype.onmousemove = function(e){
-  this.el.style.left = this.ox + (e.pageX - this.x);
-  this.el.style.top = this.oy + (e.pageY - this.y);
+  var x = this.enabled('x');
+  var y = this.enabled('y');
+  var styles = this.el.style;
+  if (x) styles.left = this.ox + (e.pageX - this.x);
+  if (y) styles.top = this.ox + (e.pageY - this.y);
   this.emit('drag');
 };
 
