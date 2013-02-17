@@ -1,0 +1,22 @@
+<script src='../build/build.js'></script>
+<style>
+#draggable {
+  position: relative;
+  top: 0;
+  border: 1px solid #ddd;
+  width: 100px;
+  height: 100px;
+  cursor: move;
+  left: 0;
+}
+</style>
+
+<div id='parent'>
+  <div id='draggable'></div>
+</div>
+
+<script>
+var el = document.querySelector('#draggable');
+var draggable = require('draggable')(el);
+draggable.build();
+</script>

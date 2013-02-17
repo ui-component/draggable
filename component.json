@@ -1,0 +1,17 @@
+{
+  "name": "draggable",
+  "repo": "ui-component/draggable",
+  "description": "make any element draggable.",
+  "version": "0.0.1",
+  "keywords": ["draggable"],
+  "dependencies": {
+    "visionmedia/configurable.js": "*",
+    "component/emitter": "*",
+    "ui-component/mouse": "*"
+  },
+  "development": {},
+  "license": "MIT",
+  "scripts": [
+    "index.js"
+  ]
+}
