@@ -56,10 +56,11 @@ Draggable.prototype.build = function(){
 
 Draggable.prototype.onmousedown = function(e){
   var style = window.getComputedStyle(this.el);
+  var rect = this.rect = this.el.getBoundingClientRect();
   this.ox = parseInt(style.left) || 0;
   this.oy = parseInt(style.top) || 0;
-  this.x = e.pageX;
-  this.y = e.pageY;
+  this.x = e.pageX - rect.left;
+  this.y = e.pageY - rect.top;
   this.emit('start');
 };
 
@@ -68,11 +69,32 @@ Draggable.prototype.onmousedown = function(e){
  */
 
 Draggable.prototype.onmousemove = function(e){
-  var x = this.enabled('x');
-  var y = this.enabled('y');
-  var styles = this.el.style;
-  if (x) styles.left = this.ox + (e.pageX - this.x);
-  if (y) styles.top = this.oy + (e.pageY - this.y);
+  var styles = this.el.style
+    , x = e.pageX - this.x
+    , y = e.pageY - this.y
+    , rel = this.el
+    , el
+    , o;
+
+  // support containment
+  if (el = this.get('containment')) {
+    o = { y: y + rel.clientHeight };
+    o.x = x + rel.clientWidth;
+    o.height = el.clientHeight;
+    o.width = el.clientWidth;
+    o.h = o.height - rel.clientHeight;
+    o.w = o.width - rel.clientWidth;
+    if (0 >= x) x = 0;
+    if (0 >= y) y = 0;
+    if (o.y >= o.height) y = o.h;
+    if (o.x >= o.width) x = o.w;
+  }
+
+  // move draggable.
+  if (this.enabled('x')) styles.left = x;
+  if (this.enabled('y')) styles.top = y;
+
+  // all done.
   this.emit('drag');
 };
 

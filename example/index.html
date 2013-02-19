@@ -8,15 +8,9 @@
   height: 100px;
   cursor: move;
   left: 0;
-}#handle {
-  width: 20px;
-  height: 20px;
-  background: #ddd;
-  position: relative;
-  top: 50%;
-  left: 50%;
 }#parent {
-  border: 1px solid red;
+  height: 300px;
+  border: 1px solid #999;
 }
 </style>
 
@@ -29,6 +23,5 @@
 <script>
 var el = document.querySelector('#draggable');
 var draggable = require('draggable')(el);
-draggable.set('handle', document.querySelector('#handle'));
 draggable.build();
 </script>
