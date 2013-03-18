@@ -17,7 +17,7 @@ module.exports = function(el, opts){
 
 /**
  * initialize new `Draggable`.
- * 
+ *
  * @param {Element} el
  * @param {Object} opts
  */
@@ -39,7 +39,7 @@ emitter(Draggable.prototype);
 
 /**
  * build draggable.
- * 
+ *
  * @return {Draggable}
  */
 
@@ -91,8 +91,8 @@ Draggable.prototype.onmousemove = function(e){
   }
 
   // move draggable.
-  if (this.enabled('x')) styles.left = x;
-  if (this.enabled('y')) styles.top = y;
+  if (this.enabled('x')) styles.left = x + 'px';
+  if (this.enabled('y')) styles.top = y + 'px';
 
   // all done.
   this.emit('drag');
