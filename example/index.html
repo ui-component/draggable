@@ -13,6 +13,11 @@
   height: 300px;
   border: 1px solid #999;
 }
+#handle {
+  background: blue;
+  width: 10px;
+  height: 10px;
+}
 </style>
 
 <div id='parent'>
@@ -23,6 +28,12 @@
 
 <script>
 var el = document.querySelector('#draggable');
+var parent = document.querySelector('#parent');
+var handle = document.querySelector('#handle');
 var draggable = require('draggable')(el);
-draggable.build();
+draggable
+  .disableXAxis()
+  .handle(handle)
+  .containment(parent)
+  .build();
 </script>

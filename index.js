@@ -3,8 +3,7 @@
  * dependencies.
  */
 
-var configurable = require('configurable.js')
-  , emitter = require('emitter')
+var emitter = require('emitter')
   , mouse = require('mouse')
   , events = require('events');
 
@@ -12,8 +11,8 @@ var configurable = require('configurable.js')
  * export `Draggable`.
  */
 
-module.exports = function(el, opts){
-  return new Draggable(el, opts);
+module.exports = function(el){
+  return new Draggable(el);
 };
 
 /**
@@ -23,11 +22,9 @@ module.exports = function(el, opts){
  * @param {Object} opts
  */
 
-function Draggable(el, opts){
-  this.settings = {};
-  this.enable('x');
-  this.enable('y');
-  this.set(opts || {});
+function Draggable(el){
+  this._xAxis = true;
+  this._yAxis = true;
   this.el = el;
 }
 
@@ -35,7 +32,6 @@ function Draggable(el, opts){
  * mixins.
  */
 
-configurable(Draggable.prototype);
 emitter(Draggable.prototype);
 
 /**
@@ -45,7 +41,7 @@ emitter(Draggable.prototype);
  */
 
 Draggable.prototype.build = function(){
-  var el = this.get('handle') || this.el;
+  var el = this._handle || this.el;
   this.touch = events(el, this);
   this.touch.bind('touchstart', 'onmousedown');
   this.touch.bind('touchmove', 'onmousemove');
@@ -82,7 +78,7 @@ Draggable.prototype.onmousemove = function(e){
     , o;
 
   // support containment
-  if (el = this.get('containment')) {
+  if (el = this._containment) {
     o = { y: y + rel.clientHeight };
     o.x = x + rel.clientWidth;
     o.height = el.clientHeight;
@@ -96,8 +92,8 @@ Draggable.prototype.onmousemove = function(e){
   }
 
   // move draggable.
-  if (this.enabled('x')) styles.left = x + 'px';
-  if (this.enabled('y')) styles.top = y + 'px';
+  if (this._xAxis) styles.left = x + 'px';
+  if (this._yAxis) styles.top = y + 'px';
 
   // all done.
   this.emit('drag');
@@ -120,5 +116,47 @@ Draggable.prototype.destroy = function(){
   this.mouse = null;
   if (this.touch) this.touch.unbind();
   this.touch = null;
+  return this;
+};
+
+/**
+ * Disable x-axis movement.
+ * @return {Draggable} 
+ */
+
+Draggable.prototype.disableXAxis = function(){
+  this._xAxis = false;
+  return this;
+};
+
+/**
+ * Disable y-axis movement.
+ * @return {Draggable}
+ */
+
+Draggable.prototype.disableYAxis = function(){
+  this._yAxis = false;
+  return this;
+};
+
+/**
+ * Set a containment element.
+ * @param  {Element} el 
+ * @return {Draggable}    
+ */
+
+Draggable.prototype.containment = function(el){
+  this._containment = el;
+  return this;
+};
+
+/**
+ * Set a handle.
+ * @param  {Element} el 
+ * @return {Draggable}    
+ */
+
+Draggable.prototype.handle = function(el){
+  this._handle = el;
   return this;
 };
