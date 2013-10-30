@@ -5,7 +5,9 @@
 
 var emitter = require('emitter')
   , mouse = require('mouse')
-  , events = require('events');
+  , events = require('events')
+  , translate = require('translate')
+  , classes = require('classes');
 
 /**
  * export `Draggable`.
@@ -59,8 +61,11 @@ Draggable.prototype.onmousedown = function(e){
   e.preventDefault();
   if (e.touches) e = e.touches[0];
   var rect = this.rect = this.el.getBoundingClientRect();
+  this.ox = rect.left - el.offsetLeft;
+  this.oy = rect.top - el.offsetTop;
   this.x = e.pageX - rect.left;
   this.y = e.pageY - rect.top;
+  classes(this.el).add('dragging');
   this.emit('start');
 };
 
@@ -71,8 +76,8 @@ Draggable.prototype.onmousedown = function(e){
 Draggable.prototype.onmousemove = function(e){
   if (e.touches) e = e.touches[0];
   var styles = this.el.style
-    , x = e.pageX - this.x
-    , y = e.pageY - this.y
+    , x = this._xAxis ? e.pageX - this.x : this.ox
+    , y = this._yAxis ? e.pageY - this.y : this.oy
     , rel = this.el
     , el
     , o;
@@ -92,8 +97,7 @@ Draggable.prototype.onmousemove = function(e){
   }
 
   // move draggable.
-  if (this._xAxis) styles.left = x + 'px';
-  if (this._yAxis) styles.top = y + 'px';
+  translate(this.el, x, y);
 
   // all done.
   this.emit('drag');
@@ -104,6 +108,7 @@ Draggable.prototype.onmousemove = function(e){
  */
 
 Draggable.prototype.onmouseup = function(e){
+  classes(this.el).remove('dragging');
   this.emit('end');
 };
 

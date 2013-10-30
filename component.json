@@ -3,15 +3,20 @@
   "repo": "ui-component/draggable",
   "description": "make any element draggable.",
   "version": "0.1.1",
-  "keywords": ["draggable"],
+  "keywords": [
+    "draggable"
+  ],
   "dependencies": {
     "component/emitter": "*",
     "ui-component/mouse": "*",
-    "component/events": "*"
+    "component/events": "*",
+    "component/translate": "*",
+    "component/classes": "*"
   },
   "development": {},
   "license": "MIT",
   "scripts": [
     "index.js"
-  ]
+  ],
+  "remotes": []
 }
