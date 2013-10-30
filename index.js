@@ -46,12 +46,12 @@ emitter(Draggable.prototype);
 
 Draggable.prototype.build = function(){
   var el = this.get('handle') || this.el;
-  this.mouse = mouse(el, this);
-  this.mouse.bind();
   this.touch = events(el, this);
   this.touch.bind('touchstart', 'onmousedown');
   this.touch.bind('touchmove', 'onmousemove');
   this.touch.bind('touchend', 'onmouseup');
+  this.mouse = mouse(el, this);
+  this.mouse.bind();
   return this;
 };
 
@@ -60,6 +60,7 @@ Draggable.prototype.build = function(){
  */
 
 Draggable.prototype.onmousedown = function(e){
+  e.preventDefault();
   if (e.touches) e = e.touches[0];
   var style = window.getComputedStyle(this.el);
   var rect = this.rect = this.el.getBoundingClientRect();
@@ -121,5 +122,6 @@ Draggable.prototype.destroy = function(){
   if (this.mouse) this.mouse.unbind();
   this.mouse = null;
   if (this.touch) this.touch.unbind();
+  this.touch = null;
   return this;
 };
