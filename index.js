@@ -3,16 +3,18 @@
  * dependencies.
  */
 
-var configurable = require('configurable.js')
-  , emitter = require('emitter')
-  , mouse = require('mouse');
+var emitter = require('emitter')
+  , mouse = require('mouse')
+  , events = require('events')
+  , translate = require('translate')
+  , classes = require('classes');
 
 /**
  * export `Draggable`.
  */
 
-module.exports = function(el, opts){
-  return new Draggable(el, opts);
+module.exports = function(el){
+  return new Draggable(el);
 };
 
 /**
@@ -22,11 +24,9 @@ module.exports = function(el, opts){
  * @param {Object} opts
  */
 
-function Draggable(el, opts){
-  this.settings = {};
-  this.enable('x');
-  this.enable('y');
-  this.set(opts || {});
+function Draggable(el){
+  this._xAxis = true;
+  this._yAxis = true;
   this.el = el;
 }
 
@@ -34,7 +34,6 @@ function Draggable(el, opts){
  * mixins.
  */
 
-configurable(Draggable.prototype);
 emitter(Draggable.prototype);
 
 /**
@@ -44,7 +43,11 @@ emitter(Draggable.prototype);
  */
 
 Draggable.prototype.build = function(){
-  var el = this.get('handle') || this.el;
+  var el = this._handle || this.el;
+  this.touch = events(el, this);
+  this.touch.bind('touchstart', 'onmousedown');
+  this.touch.bind('touchmove', 'onmousemove');
+  this.touch.bind('touchend', 'onmouseup');
   this.mouse = mouse(el, this);
   this.mouse.bind();
   return this;
@@ -55,12 +58,14 @@ Draggable.prototype.build = function(){
  */
 
 Draggable.prototype.onmousedown = function(e){
-  var style = window.getComputedStyle(this.el);
+  e.preventDefault();
+  if (e.touches) e = e.touches[0];
   var rect = this.rect = this.el.getBoundingClientRect();
-  this.ox = parseInt(style.left) || 0;
-  this.oy = parseInt(style.top) || 0;
+  this.ox = rect.left - el.offsetLeft;
+  this.oy = rect.top - el.offsetTop;
   this.x = e.pageX - rect.left;
   this.y = e.pageY - rect.top;
+  classes(this.el).add('dragging');
   this.emit('start');
 };
 
@@ -69,15 +74,16 @@ Draggable.prototype.onmousedown = function(e){
  */
 
 Draggable.prototype.onmousemove = function(e){
+  if (e.touches) e = e.touches[0];
   var styles = this.el.style
-    , x = e.pageX - this.x
-    , y = e.pageY - this.y
+    , x = this._xAxis ? e.pageX - this.x : this.ox
+    , y = this._yAxis ? e.pageY - this.y : this.oy
     , rel = this.el
     , el
     , o;
 
   // support containment
-  if (el = this.get('containment')) {
+  if (el = this._containment) {
     o = { y: y + rel.clientHeight };
     o.x = x + rel.clientWidth;
     o.height = el.clientHeight;
@@ -91,8 +97,7 @@ Draggable.prototype.onmousemove = function(e){
   }
 
   // move draggable.
-  if (this.enabled('x')) styles.left = x + 'px';
-  if (this.enabled('y')) styles.top = y + 'px';
+  translate(this.el, x, y);
 
   // all done.
   this.emit('drag');
@@ -103,6 +108,7 @@ Draggable.prototype.onmousemove = function(e){
  */
 
 Draggable.prototype.onmouseup = function(e){
+  classes(this.el).remove('dragging');
   this.emit('end');
 };
 
@@ -113,5 +119,49 @@ Draggable.prototype.onmouseup = function(e){
 Draggable.prototype.destroy = function(){
   if (this.mouse) this.mouse.unbind();
   this.mouse = null;
+  if (this.touch) this.touch.unbind();
+  this.touch = null;
+  return this;
+};
+
+/**
+ * Disable x-axis movement.
+ * @return {Draggable} 
+ */
+
+Draggable.prototype.disableXAxis = function(){
+  this._xAxis = false;
+  return this;
+};
+
+/**
+ * Disable y-axis movement.
+ * @return {Draggable}
+ */
+
+Draggable.prototype.disableYAxis = function(){
+  this._yAxis = false;
+  return this;
+};
+
+/**
+ * Set a containment element.
+ * @param  {Element} el 
+ * @return {Draggable}    
+ */
+
+Draggable.prototype.containment = function(el){
+  this._containment = el;
+  return this;
+};
+
+/**
+ * Set a handle.
+ * @param  {Element} el 
+ * @return {Draggable}    
+ */
+
+Draggable.prototype.handle = function(el){
+  this._handle = el;
   return this;
 };

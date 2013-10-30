@@ -9,10 +9,26 @@
   height: 100px;
   cursor: move;
   left: 0;
+  -webkit-transition: all 0.3s;
+  transition: all 0.3s;
 }#parent {
   height: 300px;
   border: 1px solid #999;
 }
+#handle {
+  background: blue;
+  width: 10px;
+  height: 10px;
+}
+
+#draggable.dragging {
+  -webkit-user-select: none;
+  user-select: none;
+  background: #eee;
+  -webkit-transition-duration: 0s;
+  transition-duration: 0s;
+}
+
 </style>
 
 <div id='parent'>
@@ -23,6 +39,9 @@
 
 <script>
 var el = document.querySelector('#draggable');
+var parent = document.querySelector('#parent');
+var handle = document.querySelector('#handle');
 var draggable = require('draggable')(el);
-draggable.build();
+draggable
+  .build();
 </script>
