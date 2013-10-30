@@ -7,7 +7,8 @@
   "dependencies": {
     "visionmedia/configurable.js": "*",
     "component/emitter": "*",
-    "ui-component/mouse": "*"
+    "ui-component/mouse": "*",
+    "component/events": "*"
   },
   "development": {},
   "license": "MIT",

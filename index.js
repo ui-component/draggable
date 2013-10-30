@@ -5,7 +5,8 @@
 
 var configurable = require('configurable.js')
   , emitter = require('emitter')
-  , mouse = require('mouse');
+  , mouse = require('mouse')
+  , events = require('events');
 
 /**
  * export `Draggable`.
@@ -47,6 +48,10 @@ Draggable.prototype.build = function(){
   var el = this.get('handle') || this.el;
   this.mouse = mouse(el, this);
   this.mouse.bind();
+  this.touch = events(el, this);
+  this.touch.bind('touchstart', 'onmousedown');
+  this.touch.bind('touchmove', 'onmousemove');
+  this.touch.bind('touchend', 'onmouseup');
   return this;
 };
 
@@ -55,6 +60,7 @@ Draggable.prototype.build = function(){
  */
 
 Draggable.prototype.onmousedown = function(e){
+  if (e.touches) e = e.touches[0];
   var style = window.getComputedStyle(this.el);
   var rect = this.rect = this.el.getBoundingClientRect();
   this.ox = parseInt(style.left) || 0;
@@ -69,6 +75,7 @@ Draggable.prototype.onmousedown = function(e){
  */
 
 Draggable.prototype.onmousemove = function(e){
+  if (e.touches) e = e.touches[0];
   var styles = this.el.style
     , x = e.pageX - this.x
     , y = e.pageY - this.y
@@ -113,5 +120,6 @@ Draggable.prototype.onmouseup = function(e){
 Draggable.prototype.destroy = function(){
   if (this.mouse) this.mouse.unbind();
   this.mouse = null;
+  if (this.touch) this.touch.unbind();
   return this;
 };
