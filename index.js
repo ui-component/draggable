@@ -62,10 +62,7 @@ Draggable.prototype.build = function(){
 Draggable.prototype.onmousedown = function(e){
   e.preventDefault();
   if (e.touches) e = e.touches[0];
-  var style = window.getComputedStyle(this.el);
   var rect = this.rect = this.el.getBoundingClientRect();
-  this.ox = parseInt(style.left) || 0;
-  this.oy = parseInt(style.top) || 0;
   this.x = e.pageX - rect.left;
   this.y = e.pageY - rect.top;
   this.emit('start');
