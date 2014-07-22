@@ -61,8 +61,8 @@ Draggable.prototype.onmousedown = function(e){
   e.preventDefault();
   if (e.touches) e = e.touches[0];
   var rect = this.rect = this.el.getBoundingClientRect();
-  this.ox = rect.left - el.offsetLeft;
-  this.oy = rect.top - el.offsetTop;
+  this.ox = rect.left - this.el.offsetLeft;
+  this.oy = rect.top - this.el.offsetTop;
   this.x = e.pageX - rect.left;
   this.y = e.pageY - rect.top;
   classes(this.el).add('dragging');
