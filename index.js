@@ -76,8 +76,8 @@ Draggable.prototype.onmousedown = function(e){
 Draggable.prototype.onmousemove = function(e){
   if (e.touches) e = e.touches[0];
   var styles = this.el.style
-    , x = this._xAxis ? e.pageX - this.x : this.ox
-    , y = this._yAxis ? e.pageY - this.y : this.oy
+    , x = this._xAxis ? e.pageX - this.el.offsetLeft - this.x : this.ox
+    , y = this._yAxis ? e.pageY - this.el.offsetTop - this.y : this.oy
     , rel = this.el
     , el
     , o;
