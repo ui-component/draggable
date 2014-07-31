@@ -99,7 +99,7 @@ Draggable.prototype.onmousemove = function(e){
   }
 
   // round pixels
-  if (this.options.roundPixels && this.options.roundPixels === true) {
+  if (typeof this.options.roundPixels === 'undefined' || this.options.roundPixels === true) {
     x = Math.floor(x);
     y = Math.floor(y);
   }
