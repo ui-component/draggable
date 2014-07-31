@@ -13,21 +13,23 @@ var emitter = require('emitter')
  * export `Draggable`.
  */
 
-module.exports = function(el){
-  return new Draggable(el);
+module.exports = function(el, options){
+  options = options || {};
+  return new Draggable(el, options);
 };
 
 /**
  * initialize new `Draggable`.
  *
  * @param {Element} el
- * @param {Object} opts
+ * @param {Object} options
  */
 
-function Draggable(el){
+function Draggable(el, options){
   this._xAxis = true;
   this._yAxis = true;
   this.el = el;
+  this.options = options;
 }
 
 /**
@@ -94,6 +96,12 @@ Draggable.prototype.onmousemove = function(e){
     if (0 >= y) y = 0;
     if (o.y >= o.height) y = o.h;
     if (o.x >= o.width) x = o.w;
+  }
+
+  // round pixels
+  if (this.options.roundPixels && this.options.roundPixels === true) {
+    x = Math.floor(x);
+    y = Math.floor(y);
   }
 
   // move draggable.
