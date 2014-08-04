@@ -29,7 +29,12 @@ function Draggable(el, options){
   this._xAxis = true;
   this._yAxis = true;
   this.el = el;
-  this.options = options;
+  this.options = {};
+  this.options.roundPixels = true;
+
+  if (typeof options.roundPixels !== 'undefined') {
+    this.options.roundPixels = options.roundPixels;
+  }
 }
 
 /**
@@ -99,7 +104,7 @@ Draggable.prototype.onmousemove = function(e){
   }
 
   // round pixels
-  if (typeof this.options.roundPixels === 'undefined' || this.options.roundPixels === true) {
+  if (this.options.roundPixels === true) {
     x = Math.floor(x);
     y = Math.floor(y);
   }
