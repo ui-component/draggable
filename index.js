@@ -13,21 +13,28 @@ var emitter = require('emitter')
  * export `Draggable`.
  */
 
-module.exports = function(el){
-  return new Draggable(el);
+module.exports = function(el, options){
+  options = options || {};
+  return new Draggable(el, options);
 };
 
 /**
  * initialize new `Draggable`.
  *
  * @param {Element} el
- * @param {Object} opts
+ * @param {Object} options
  */
 
-function Draggable(el){
+function Draggable(el, options){
   this._xAxis = true;
   this._yAxis = true;
   this.el = el;
+  this.options = {};
+  this.options.roundPixels = true;
+
+  if (typeof options.roundPixels !== 'undefined') {
+    this.options.roundPixels = options.roundPixels;
+  }
 }
 
 /**
@@ -61,8 +68,8 @@ Draggable.prototype.onmousedown = function(e){
   e.preventDefault();
   if (e.touches) e = e.touches[0];
   var rect = this.rect = this.el.getBoundingClientRect();
-  this.ox = rect.left - el.offsetLeft;
-  this.oy = rect.top - el.offsetTop;
+  this.ox = rect.left - this.el.offsetLeft;
+  this.oy = rect.top - this.el.offsetTop;
   this.x = e.pageX - rect.left;
   this.y = e.pageY - rect.top;
   classes(this.el).add('dragging');
@@ -76,8 +83,8 @@ Draggable.prototype.onmousedown = function(e){
 Draggable.prototype.onmousemove = function(e){
   if (e.touches) e = e.touches[0];
   var styles = this.el.style
-    , x = this._xAxis ? e.pageX - this.x : this.ox
-    , y = this._yAxis ? e.pageY - this.y : this.oy
+    , x = this._xAxis ? e.pageX - this.el.offsetLeft - this.x : this.ox
+    , y = this._yAxis ? e.pageY - this.el.offsetTop - this.y : this.oy
     , rel = this.el
     , el
     , o;
@@ -94,6 +101,12 @@ Draggable.prototype.onmousemove = function(e){
     if (0 >= y) y = 0;
     if (o.y >= o.height) y = o.h;
     if (o.x >= o.width) x = o.w;
+  }
+
+  // round pixels
+  if (this.options.roundPixels === true) {
+    x = Math.floor(x);
+    y = Math.floor(y);
   }
 
   // move draggable.

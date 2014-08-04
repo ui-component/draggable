@@ -1,47 +1,53 @@
 <!DOCTYPE html>
-<script src='../build/build.js'></script>
-<style>
-#draggable {
-  position: relative;
-  top: 0;
-  border: 1px solid #ddd;
-  width: 100px;
-  height: 100px;
-  cursor: move;
-  left: 0;
-  -webkit-transition: all 0.3s;
-  transition: all 0.3s;
-}#parent {
-  height: 300px;
-  border: 1px solid #999;
-}
-#handle {
-  background: blue;
-  width: 10px;
-  height: 10px;
-}
+<html lang="en">
+<head>
+  <style>
+  #draggable {
+    position: relative;
+    top: 0;
+    border: 1px solid #ddd;
+    width: 100px;
+    height: 100px;
+    cursor: move;
+    left: 0;
+    -webkit-transition: all 0.3s;
+    transition: all 0.3s;
+  }#parent {
+    height: 300px;
+    border: 1px solid #999;
+  }
+  #handle {
+    background: blue;
+    width: 10px;
+    height: 10px;
+  }
 
-#draggable.dragging {
-  -webkit-user-select: none;
-  user-select: none;
-  background: #eee;
-  -webkit-transition-duration: 0s;
-  transition-duration: 0s;
-}
+  #draggable.dragging {
+    -webkit-user-select: none;
+    user-select: none;
+    background: #eee;
+    -webkit-transition-duration: 0s;
+    transition-duration: 0s;
+  }
 
 </style>
-
-<div id='parent'>
-  <div id='draggable'>
-    <div id='handle'></div>
+</head>
+<body>
+  <div id='parent'>
+    <div id='draggable'>
+      <div id='handle'></div>
+    </div>
   </div>
-</div>
-
-<script>
-var el = document.querySelector('#draggable');
-var parent = document.querySelector('#parent');
-var handle = document.querySelector('#handle');
-var draggable = require('draggable')(el);
-draggable
-  .build();
-</script>
+  <script src='../build/build.js'></script>
+  <script>
+  var el = document.querySelector('#draggable');
+  var parent = document.querySelector('#parent');
+  var handle = document.querySelector('#handle');
+  var draggable = require('draggable')(el);
+  draggable.containment(parent);
+  draggable.handle(handle);
+  draggable
+    .build();
+  </script>
+</body>
+</html>
